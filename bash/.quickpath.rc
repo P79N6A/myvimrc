@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# this variable should be complex enough to avoid naming pollution
+shortcut_and_paths=(
+  'code ~/code/'
+  'rpnmovi ~/movidius/rpn-movi/'
+  'mvmodel ~/movidius/rpn-movi/'
+)
+
+for ((i = 0; i < ${#shortcut_and_paths[@]}; i++)); do
+  cmd=${shortcut_and_paths[$i]}
+  shortcut=${cmd%% *}
+  path=${cmd#* }
+  func="g2$shortcut() { cd $path; }"
+  eval $func
+done
+
+g2help() {
+  for ((i = 0; i < ${#shortcut_and_paths[@]}; i++)); do
+    cmd=${shortcut_and_paths[$i]}
+    shortcut=${cmd%% *}
+    path=${cmd#* }
+    echo -e "g2$shortcut\t=>\tcd $path"
+  done
+  echo -e "\033[0;33;1mexample: input 'g2${shortcut_and_paths[0]%% *}' to run 'cd ${shortcut_and_paths[0]#* }'\033[0m"
+}
